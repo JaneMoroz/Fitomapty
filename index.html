@@ -13,6 +13,19 @@
 
     <link rel="stylesheet" href="style.css" />
 
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <script
+      defer
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+
     <script defer src="script.js"></script>
     <title>fitomapty // Map your workouts</title>
   </head>
@@ -31,7 +44,7 @@
               <option value="cycling">Exercise</option>
             </select>
           </div>
-          <div class="form__row form__row--hidden">
+          <div class="form__row">
             <label class="form__label">Distance</label>
             <input class="form__input form__input--distance" placeholder="km" />
           </div>
@@ -44,7 +57,7 @@
               <option value="cycling">Restorative</option>
             </select>
           </div>
-          <div class="form__row">
+          <div class="form__row form__row--hidden">
             <label class="form__label">Sport</label>
             <select class="form__input form__input--exercise-type">
               <option value="running">Fitness</option>
