@@ -16,8 +16,74 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
 /////////////////////////////////////////////////////////////////////////
+// Workout Class
+class Workout {
+  date = new Date();
+  id = (Date.now() + '').slice(-10);
+
+  constructor(coords, duration) {
+    this.coords = coords; // [lat, lng]
+    this.duration = duration; // in min
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Running Class
+class Running extends Workout {
+  constructor(coords, duration, distance, cadence) {
+    super(coords, duration);
+    this.distance = distance; // in km
+    this.cadence = cadence;
+    this.calcPace();
+  }
+
+  calcPace() {
+    // min/km
+    this.pace = this.duration / this.distance;
+    return this.pace;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Cycling Class
+class Cycling extends Workout {
+  constructor(coords, duration, distance, elevationGain) {
+    super(coords, duration);
+    this.distance = distance; // in km
+    this.elevationGain = elevationGain;
+    this.calcSpeed();
+  }
+
+  calcSpeed() {
+    // km/h
+    this.speed = this.distance / (this.duration / 60);
+    return this.speed;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Yoga Class
+class Yoga extends Workout {
+  constructor(coords, duration, style) {
+    super(coords, duration);
+    this.style = style;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Exercise Class
+class Exercise extends Workout {
+  constructor(coords, duration, type) {
+    super(coords, duration);
+    this.type = type;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Application Architecture
 // App Class
 class App {
+  // Private fields
   #map;
   #mapEvent;
 
