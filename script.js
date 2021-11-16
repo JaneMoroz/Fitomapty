@@ -129,6 +129,13 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationFields);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+
+    // Attach event handlers to btns
+    //Delete btn
+    const deleteBtns = document.querySelectorAll('.workout__btn-delete');
+    deleteBtns.forEach(btn =>
+      btn?.addEventListener('click', this._deleteWorkout.bind(this))
+    );
   }
 
   // Get current position
@@ -300,6 +307,12 @@ class App {
     // Render workout on list
     this._renderWorkout(workout);
 
+    // Attach event handlers to edit/delete btns
+    // Delete btn
+    const deleteBtn = document.querySelector('.workout__btn-delete');
+    console.log(deleteBtn);
+    deleteBtn.addEventListener('click', this._deleteWorkout.bind(this));
+
     // Hide the form and clear the inputs fields
     this._hideForm();
 
@@ -308,6 +321,13 @@ class App {
   }
 
   _renderWorkoutMarker(workout) {
+    var myIcon = L.icon({
+      iconUrl: 'icon.png',
+      iconSize: [40, 41],
+      iconAnchor: [22, 94],
+      popupAnchor: [0, -92],
+    });
+
     // Get workout emoji
     const emoji = function (type) {
       if (type === 'running') return '🏃‍♂️';
@@ -316,7 +336,7 @@ class App {
       if (type === 'exercise') return '🎽';
     };
 
-    L.marker(workout.coords)
+    L.marker(workout.coords, { icon: myIcon })
       .addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -358,29 +378,33 @@ class App {
     // Generate html
     let html = `
       <li class="workout workout--${workout.type}" data-id="${workout.id}">
-            <h2 class="workout__title">${workout.description}</h2>
-            <div class="workout__details">
-              <span class="workout__icon">${emoji(workout.type)}</span>
-              ${afterEmoji(workout)}
-            </div>
-            <div class="workout__details">
-              <span class="workout__icon">⏱</span>
-              <span class="workout__value">${workout.duration}</span>
-              <span class="workout__unit">min</span>
-            </div>
+        <h2 class="workout__title">${workout.description}</h2>
+        <div class="workout__btns">
+          <button class="btn workout__btn workout__btn-edit">🖊</button>
+          <button class="btn workout__btn workout__btn-delete">❌</button>
+        </div>
+        <div class="workout__details">
+          <span class="workout__icon">${emoji(workout.type)}</span>
+          ${afterEmoji(workout)}
+        </div>
+        <div class="workout__details">
+          <span class="workout__icon">⏱</span>
+          <span class="workout__value">${workout.duration}</span>
+          <span class="workout__unit">min</span>
+        </div>
             `;
     if (workout.type === 'running')
       html += `
        <div class="workout__details">
-            <span class="workout__icon">⚡️</span>
-            <span class="workout__value">${workout.pace.toFixed(1)}</span>
-            <span class="workout__unit">min/km</span>
-          </div>
-          <div class="workout__details">
-            <span class="workout__icon">🦶🏼</span>
-            <span class="workout__value">${workout.cadence}</span>
-            <span class="workout__unit">spm</span>
-          </div>
+          <span class="workout__icon">⚡️</span>
+          <span class="workout__value">${workout.pace.toFixed(1)}</span>
+          <span class="workout__unit">min/km</span>
+       </div>
+        <div class="workout__details">
+          <span class="workout__icon">🦶🏼</span>
+          <span class="workout__value">${workout.cadence}</span>
+          <span class="workout__unit">spm</span>
+        </div>
         </li>
       `;
 
@@ -412,12 +436,27 @@ class App {
     form.insertAdjacentHTML('afterend', html);
   }
 
+  _deleteWorkout(e) {
+    const workoutEl = e.target.closest('.workout');
+    if (!workoutEl) return;
+    const workoutIndex = this.#workouts.findIndex(
+      work => work.id === workoutEl.dataset.id
+    );
+
+    this.#workouts.splice(workoutIndex, 1);
+    localStorage.removeItem('workouts');
+    localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+    location.reload();
+  }
+
   _moveToPopup(e) {
     const workoutEl = e.target.closest('.workout');
     if (!workoutEl) return;
     const workout = this.#workouts.find(
       work => work.id === workoutEl.dataset.id
     );
+
+    if (!workout) return;
 
     this.#map.setView(workout.coords, this.#mapZoomLevel, {
       animate: true,
