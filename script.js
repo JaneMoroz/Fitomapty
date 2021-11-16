@@ -293,6 +293,14 @@ class App {
   }
 
   _renderWorkoutMarker(workout) {
+    // Get workout emoji
+    const emoji = function (type) {
+      if (type === 'running') return '🏃‍♂️';
+      if (type === 'cycling') return '🚴‍♀️';
+      if (type === 'yoga') return '🧘‍♀️';
+      if (type === 'exercise') return '🎽';
+    };
+
     L.marker(workout.coords)
       .addTo(this.#map)
       .bindPopup(
@@ -304,7 +312,7 @@ class App {
           className: `${workout.type}-popup`,
         })
       )
-      .setPopupContent(`${workout.duration}`)
+      .setPopupContent(`${emoji(workout.type)} ${workout.description}`)
       .openPopup();
   }
 
