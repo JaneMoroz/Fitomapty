@@ -131,10 +131,15 @@ class App {
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
 
     // Attach event handlers to btns
-    //Delete btn
+    // Delete btn
     const deleteBtns = document.querySelectorAll('.workout__btn-delete');
     deleteBtns.forEach(btn =>
       btn?.addEventListener('click', this._deleteWorkout.bind(this))
+    );
+    // Edit btn
+    const editBtns = document.querySelectorAll('.workout__btn-edit');
+    editBtns.forEach(btn =>
+      btn?.addEventListener('click', this._editWorkout.bind(this))
     );
   }
 
@@ -246,6 +251,15 @@ class App {
     const { lat, lng } = this.#mapEvent.latlng;
     let workout;
 
+    // If workout with the same coord exists, delete it ('Edit' functionality)
+    const workoutToEditIndex = this.#workouts.findIndex(
+      work => work.coords[0] == lat && work.coords[1] == lng
+    );
+
+    if (workoutToEditIndex !== -1) {
+      this.#workouts.splice(workoutToEditIndex, 1);
+    }
+
     // If workout is running, create running object
     if (type === 'running') {
       const distance = +inputDistance.value;
@@ -312,6 +326,10 @@ class App {
     const deleteBtn = document.querySelector('.workout__btn-delete');
     console.log(deleteBtn);
     deleteBtn.addEventListener('click', this._deleteWorkout.bind(this));
+    // Edit btn
+    const editBtn = document.querySelector('.workout__btn-edit');
+    console.log(editBtn);
+    editBtn.addEventListener('click', this._editWorkout.bind(this));
 
     // Hide the form and clear the inputs fields
     this._hideForm();
@@ -436,6 +454,28 @@ class App {
     form.insertAdjacentHTML('afterend', html);
   }
 
+  _editWorkout(e) {
+    // Get workout object from the array
+    const workoutEl = e.target.closest('.workout');
+    if (!workoutEl) return;
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+
+    // Display form
+    this._showForm();
+
+    // Fill form inputs with the data
+    inputType.value = `${workout.type}`;
+    this._toggleElevationFields();
+
+    inputDistance.value = `${workout.distance}`;
+    inputYogaStyle.value = `${workout.style}`;
+    inputExerciseType.value = `${workout.extype}`;
+    inputDuration.value = `${workout.duration}`;
+    inputCadence.value = `${workout.cadence}`;
+  }
+
   _deleteWorkout(e) {
     const workoutEl = e.target.closest('.workout');
     if (!workoutEl) return;
@@ -464,10 +504,20 @@ class App {
         duration: 1,
       },
     });
+
+    // For edit functionality
+    this.#mapEvent = {
+      latlng: {
+        lat: `${workout.coords[0]}`,
+        lng: `${workout.coords[1]}`,
+      },
+    };
   }
 
   _setLocalStorage() {
     localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+    // For edit functionality
+    location.reload();
   }
 
   _getLocalStorage() {
