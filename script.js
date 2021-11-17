@@ -129,18 +129,8 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationFields);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
-
-    // Attach event handlers to btns
-    // Delete btn
-    const deleteBtns = document.querySelectorAll('.workout__btn-delete');
-    deleteBtns.forEach(btn =>
-      btn?.addEventListener('click', this._deleteWorkout.bind(this))
-    );
-    // Edit btn
-    const editBtns = document.querySelectorAll('.workout__btn-edit');
-    editBtns.forEach(btn =>
-      btn?.addEventListener('click', this._editWorkout.bind(this))
-    );
+    containerWorkouts.addEventListener('click', this._editWorkout.bind(this));
+    containerWorkouts.addEventListener('click', this._deleteWorkout.bind(this));
   }
 
   // Get current position
@@ -248,6 +238,7 @@ class App {
     // Get data from form
     const type = inputType.value;
     const duration = +inputDuration.value; // use + to convert value to the number
+    console.log(this.#mapEvent);
     const { lat, lng } = this.#mapEvent.latlng;
     let workout;
 
@@ -320,16 +311,6 @@ class App {
 
     // Render workout on list
     this._renderWorkout(workout);
-
-    // Attach event handlers to edit/delete btns
-    // Delete btn
-    const deleteBtn = document.querySelector('.workout__btn-delete');
-    console.log(deleteBtn);
-    deleteBtn.addEventListener('click', this._deleteWorkout.bind(this));
-    // Edit btn
-    const editBtn = document.querySelector('.workout__btn-edit');
-    console.log(editBtn);
-    editBtn.addEventListener('click', this._editWorkout.bind(this));
 
     // Hide the form and clear the inputs fields
     this._hideForm();
@@ -456,8 +437,9 @@ class App {
 
   _editWorkout(e) {
     // Get workout object from the array
+    const editBtnEl = e.target.closest('.workout__btn-edit');
+    if (!editBtnEl) return;
     const workoutEl = e.target.closest('.workout');
-    if (!workoutEl) return;
     const workout = this.#workouts.find(
       work => work.id === workoutEl.dataset.id
     );
@@ -469,24 +451,32 @@ class App {
     inputType.value = `${workout.type}`;
     this._toggleElevationFields();
 
-    inputDistance.value = `${workout.distance}`;
-    inputYogaStyle.value = `${workout.style}`;
-    inputExerciseType.value = `${workout.extype}`;
+    inputDistance.value = `${typeof workout.distance !== 'undefined' ? workout.distance : 0}`;
+    inputYogaStyle.value = `${typeof workout.style !== 'undefined' ? workout.style : 'hatha'}`;
+    inputExerciseType.value = `${typeof workout.extype !== 'undefined' ? workout.extype : 'fitness'}`;
     inputDuration.value = `${workout.duration}`;
-    inputCadence.value = `${workout.cadence}`;
+    inputCadence.value = `${typeof workout.cadence !== 'undefined' ? workout.cadence : 0}`;
+
+    // Get coords
+    this.#mapEvent = {
+      latlng: {
+        lat: workout.coords[0],
+        lng: workout.coords[1],
+      },
+    };
+    console.log(this.#mapEvent);
   }
 
   _deleteWorkout(e) {
+    const deleteBtnEl = e.target.closest('.workout__btn-delete');
+    if (!deleteBtnEl) return;
     const workoutEl = e.target.closest('.workout');
-    if (!workoutEl) return;
     const workoutIndex = this.#workouts.findIndex(
       work => work.id === workoutEl.dataset.id
     );
 
     this.#workouts.splice(workoutIndex, 1);
-    localStorage.removeItem('workouts');
-    localStorage.setItem('workouts', JSON.stringify(this.#workouts));
-    location.reload();
+    this._setLocalStorage();
   }
 
   _moveToPopup(e) {
@@ -504,14 +494,6 @@ class App {
         duration: 1,
       },
     });
-
-    // For edit functionality
-    this.#mapEvent = {
-      latlng: {
-        lat: `${workout.coords[0]}`,
-        lng: `${workout.coords[1]}`,
-      },
-    };
   }
 
   _setLocalStorage() {
