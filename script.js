@@ -107,6 +107,7 @@ const inputExerciseType = document.querySelector('.form__input--exercise-type');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+const deleteAllBtn = document.querySelector('.delete__btn');
 
 /////////////////////////////////////////////////////////////////////////
 // Application Architecture
@@ -128,6 +129,7 @@ class App {
     // Attach event handlers
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationFields);
+    deleteAllBtn.addEventListener('click', this._reset.bind(this));
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
     containerWorkouts.addEventListener('click', this._editWorkout.bind(this));
     containerWorkouts.addEventListener('click', this._deleteWorkout.bind(this));
@@ -324,7 +326,7 @@ class App {
       iconUrl: 'icon.png',
       iconSize: [40, 41],
       iconAnchor: [20, 30],
-      popupAnchor: [0, -25]
+      popupAnchor: [0, -25],
     });
 
     // Get workout emoji
@@ -451,11 +453,19 @@ class App {
     inputType.value = `${workout.type}`;
     this._toggleElevationFields();
 
-    inputDistance.value = `${typeof workout.distance !== 'undefined' ? workout.distance : 0}`;
-    inputYogaStyle.value = `${typeof workout.style !== 'undefined' ? workout.style : 'hatha'}`;
-    inputExerciseType.value = `${typeof workout.extype !== 'undefined' ? workout.extype : 'fitness'}`;
+    inputDistance.value = `${
+      typeof workout.distance !== 'undefined' ? workout.distance : 0
+    }`;
+    inputYogaStyle.value = `${
+      typeof workout.style !== 'undefined' ? workout.style : 'hatha'
+    }`;
+    inputExerciseType.value = `${
+      typeof workout.extype !== 'undefined' ? workout.extype : 'fitness'
+    }`;
     inputDuration.value = `${workout.duration}`;
-    inputCadence.value = `${typeof workout.cadence !== 'undefined' ? workout.cadence : 0}`;
+    inputCadence.value = `${
+      typeof workout.cadence !== 'undefined' ? workout.cadence : 0
+    }`;
 
     // Get coords
     this.#mapEvent = {
@@ -515,7 +525,7 @@ class App {
   }
 
   // Empty local storage
-  reset() {
+  _reset() {
     localStorage.removeItem('workouts');
     location.reload();
   }
