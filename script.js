@@ -342,8 +342,8 @@ class App {
     var myIcon = L.icon({
       iconUrl: 'icon.png',
       iconSize: [40, 41],
-      iconAnchor: [22, 94],
-      popupAnchor: [0, -92],
+      iconAnchor: [20, 30],
+      popupAnchor: [0, -25]
     });
 
     // Get workout emoji
