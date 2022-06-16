@@ -1,8 +1,8 @@
-# 🧘‍♀️🏋️‍♀️🚴‍♂️🏃‍♂️ Fitomapty
+# 🧘‍♀️🏋️‍🚴‍♂️🏃‍♂️ Fitomapty
 An app for keeping track of your sport activities.
 
 ## 🚀 Technologies used:
-<img src="https://i.ibb.co/Sw7tMWz/htmlIcon.png" alt="Html icon" width="100" /><img src="https://i.ibb.co/hWxYX5x/cssIcon.png" alt="Css icon" width="108" /><img src="https://i.ibb.co/ws3Sq9X/jsIcon.png" alt="Javascript icon" width="100" /><img src="https://i.ibb.co/XCjffYH/sassIcon.png" alt="Sass icon" height="85" />
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="html" /><img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="css" /><img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="js" /><img src="https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white" alt="sass" />
 
 - [x] [Leaflet](https://leafletjs.com/) library
 - [x] [Parcel](https://parceljs.org/)
